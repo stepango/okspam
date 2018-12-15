@@ -5,35 +5,49 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.PixelFormat
-import android.os.IBinder
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.Observables
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+
 
 class MainService : Service() {
 
+    private var request: SpamRequest? = null
+
     private var windowManager: WindowManager? = null
-
     private var floatyView: View? = null
+    private var disposables = mutableListOf<Disposable>()
 
-    override fun onBind(intent: Intent): IBinder? {
-
-        return null
-    }
+    override fun onBind(intent: Intent) = null
 
     override fun onCreate() {
-
         super.onCreate()
 
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        Log.e("Service", "onStartComm")
+        request = intent?.extras?.getParcelable(KEY_SPAM)
+
+        if (request == null) onDestroy()
 
         addOverlayView()
+
+        return super.onStartCommand(intent, flags, startId)
     }
 
     private fun addOverlayView() {
+        cleanup()
 
         val params = WindowManager.LayoutParams(
             WindowManager.LayoutParams.MATCH_PARENT,
@@ -50,38 +64,8 @@ class MainService : Service() {
         val interceptorLayout = object : FrameLayout(this) {
 
             override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-                var handled = false
-                val keyCode = event.keyCode
-                Log.e("Overlay", "Key: $keyCode")
-                if (event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) {
-                    if (event.repeatCount == 0) {
-                        when (keyCode) {
-                            KeyEvent.KEYCODE_BUTTON_X -> {
-                                //"Button X (Square)".toast()
-                                handled = true
-                            }
-                            KeyEvent.KEYCODE_BUTTON_A -> {
-                                //"Button A (Cross)".toast()
-                                changeImage()
-                                handled = true
-                            }
-                            KeyEvent.KEYCODE_BUTTON_Y -> {
-                                //"Button Y (Triangle)".toast()
-                                handled = true
-                            }
-                            KeyEvent.KEYCODE_BUTTON_B -> {
-                                //"Button B (Circle)".toast()
-                                handled = true
-                            }
-                        }
-                    }
-                    if (handled) {
-                        return true
-                    }
-                }
-
-                // Otherwise don't intercept the event
-                return super.dispatchKeyEvent(event)
+                // Block all key events
+                return true
             }
 
         }
@@ -93,43 +77,60 @@ class MainService : Service() {
 
         floatyView?.let {
             val imageView = it.findViewById<ImageView>(R.id.canvas)
-            Glide.with(this).load(getRandomImage()).asGif().crossFade().into(imageView)
+            Glide.with(this).load(request!!.imageUrl).asGif().into(imageView)
             imageView.animate().translationX(
                 when (Random.nextInt() % 2) {
                     0 -> -1
                     else -> 1
                 } * Resources.getSystem().displayMetrics.widthPixels.toFloat()
             ).setDuration(0).start()
-            imageView.animate().translationX(0f).setDuration(5000).start()
+            imageView.animate().translationX(0f).setDuration(3000).start()
+
+            val textView = it.findViewById<TextView>(R.id.message)
+            request?.message?.let { msg ->
+                textView.text = msg
+
+                val textColorChanger = Observable.interval(500, TimeUnit.MILLISECONDS)
+                    .doOnNext { counter ->
+                        if (counter % 2 == 0L) {
+                            textView.setTextColor(resources.getColor(R.color.white))
+                        } else {
+                            textView.setTextColor(resources.getColor(R.color.black))
+                        }
+                    }
+                    .subscribe()
+
+                disposables.add(textColorChanger)
+            }
+
+            val disappearSoon = Observable.timer(10, TimeUnit.SECONDS)
+                .doOnNext {
+                    onDestroy()
+                }
+                .subscribe()
+            disposables.add(disappearSoon)
+
             windowManager!!.addView(floatyView, params)
         }
         floatyView?.requestFocus()
     }
 
-    private fun changeImage() {
-        floatyView?.let {
-            val imageView = it.findViewById<ImageView>(R.id.canvas)
-            Glide.with(this).load(getRandomImage()).asGif().crossFade().into(imageView)
-        }
-    }
-
-    private fun getRandomImage(): Int {
-        val fields = R.raw::class.java.fields
-        return fields[getRandomInt(0, fields.size - 1)].get(null) as Int
-    }
-
-    private fun getRandomInt(min: Int = 0, max: Int = 100) = Random.nextInt(max - min + 1) + min
-
     override fun onDestroy() {
-
         super.onDestroy()
 
+        cleanup()
+
         if (floatyView != null) {
-
             windowManager!!.removeView(floatyView)
-
-            floatyView
+            floatyView = null
         }
+    }
+
+    private fun cleanup() {
+        disposables.forEach {
+            if (!it.isDisposed) it.dispose()
+        }
+        disposables.clear()
     }
 
 }
