@@ -1,21 +1,14 @@
 package com.stepango.okspam
 
-import android.content.Context.LAYOUT_INFLATER_SERVICE
-import android.view.View.inflate
-import android.view.KeyEvent.KEYCODE_BACK
-import android.widget.FrameLayout
-import android.R.attr.y
-import android.R.attr.x
-import android.R.attr.gravity
 import android.app.Service
 import android.content.Context
-import android.graphics.PixelFormat
-import android.content.Context.WINDOW_SERVICE
 import android.content.Intent
+import android.graphics.PixelFormat
 import android.os.IBinder
 import android.util.Log
 import android.view.*
-import android.view.View.OnTouchListener
+import android.widget.FrameLayout
+import com.bumptech.glide.Glide
 
 
 class MainService : Service(), View.OnTouchListener {
@@ -57,10 +50,10 @@ class MainService : Service(), View.OnTouchListener {
             override fun dispatchKeyEvent(event: KeyEvent): Boolean {
 
                 // Only fire on the ACTION_DOWN event, or you'll get two events (one for _DOWN, one for _UP)
-                if (event.getAction() === KeyEvent.ACTION_DOWN) {
+                if (event.action === KeyEvent.ACTION_DOWN) {
 
                     // Check if the HOME button is pressed
-                    if (event.getKeyCode() === KeyEvent.KEYCODE_BACK) {
+                    if (event.keyCode === KeyEvent.KEYCODE_BACK) {
 
                         Log.v(TAG, "BACK Button Pressed")
 
@@ -79,9 +72,12 @@ class MainService : Service(), View.OnTouchListener {
             interceptorLayout
         )
 
-        floatyView!!.setOnTouchListener(this)
+        floatyView?.let {
+            it.setOnTouchListener(this)
+            Glide.with(this).load(R.raw.gif_1).asGif().into(it.findViewById(R.id.canvas))
 
-        windowManager!!.addView(floatyView, params)
+            windowManager!!.addView(floatyView, params)
+        }
     }
 
     override fun onDestroy() {
@@ -92,7 +88,7 @@ class MainService : Service(), View.OnTouchListener {
 
             windowManager!!.removeView(floatyView)
 
-            floatyView = null
+            floatyView
         }
     }
 
