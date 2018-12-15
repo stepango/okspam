@@ -26,6 +26,11 @@ class MainActivity : Activity() {
     private fun launchMainService() {
 
         val svc = Intent(this, MainService::class.java)
+        svc.putExtras(Bundle().apply {
+            putParcelable(KEY_SPAM, SpamRequest(
+                "https://i.giphy.com/Myp2C0iWDMh2g.gif"
+            ))
+        })
         stopService(svc)
         startService(svc)
 
