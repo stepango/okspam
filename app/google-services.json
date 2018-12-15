@@ -1,0 +1,117 @@
+{
+  "project_info": {
+    "project_number": "893160554507",
+    "firebase_url": "https://testapp-25daf.firebaseio.com",
+    "project_id": "testapp-25daf",
+    "storage_bucket": "testapp-25daf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893160554507:android:876422aefcc4915e",
+        "android_client_info": {
+          "package_name": "com.stepango.okspam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893160554507-aa1b213qd1gvg51b4ilkt0f031is6ota.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTN3hn-T27Q6GScz_H_bN3VH2IXnnVuhw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893160554507:android:81d03bfa6eaccda6",
+        "android_client_info": {
+          "package_name": "com.stepango.okspam.OkSpamApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893160554507-aa1b213qd1gvg51b4ilkt0f031is6ota.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTN3hn-T27Q6GScz_H_bN3VH2IXnnVuhw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893160554507:android:a7544e8207670962",
+        "android_client_info": {
+          "package_name": "stepango.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893160554507-jskrasiso8tcfdihdbhj2uh519ai8441.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "stepango.myapplication",
+            "certificate_hash": "5d0e411ffb1965024a9c176f7c9b05f530221dc1"
+          }
+        },
+        {
+          "client_id": "893160554507-aa1b213qd1gvg51b4ilkt0f031is6ota.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTN3hn-T27Q6GScz_H_bN3VH2IXnnVuhw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893160554507-aa1b213qd1gvg51b4ilkt0f031is6ota.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
