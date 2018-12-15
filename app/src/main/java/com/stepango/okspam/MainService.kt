@@ -93,7 +93,7 @@ class MainService : Service() {
 
         floatyView?.let {
             val imageView = it.findViewById<ImageView>(R.id.canvas)
-            Glide.with(this).load(getRandomImage()).asGif().into(imageView)
+            Glide.with(this).load(getRandomImage()).asGif().crossFade().into(imageView)
             imageView.animate().translationX(
                 when (Random.nextInt() % 2) {
                     0 -> -1
@@ -109,16 +109,13 @@ class MainService : Service() {
     private fun changeImage() {
         floatyView?.let {
             val imageView = it.findViewById<ImageView>(R.id.canvas)
-            Glide.with(this).load(getRandomImage()).asGif().into(imageView)
+            Glide.with(this).load(getRandomImage()).asGif().crossFade().into(imageView)
         }
     }
 
     private fun getRandomImage(): Int {
-        return when (getRandomInt(1, 3)) {
-            1 -> R.raw.gif_1
-            2 -> R.raw.gif_2
-            else -> R.raw.gif_3
-        }
+        val fields = R.raw::class.java.fields
+        return fields[getRandomInt(0, fields.size - 1)].get(null) as Int
     }
 
     private fun getRandomInt(min: Int = 0, max: Int = 100) = Random.nextInt(max - min + 1) + min
