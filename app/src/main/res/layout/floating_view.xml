@@ -20,7 +20,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="40sp"
+            android:textStyle="bold"
             android:textColor="@color/black"
             tools:text="Hello world!"
             />
