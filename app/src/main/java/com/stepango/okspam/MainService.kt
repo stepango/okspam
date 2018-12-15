@@ -11,9 +11,9 @@ import android.view.*
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import kotlin.random.Random
 
-
-class MainService : Service(), View.OnTouchListener {
+class MainService : Service() {
 
     private var windowManager: WindowManager? = null
 
@@ -39,7 +39,7 @@ class MainService : Service(), View.OnTouchListener {
             WindowManager.LayoutParams.MATCH_PARENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            0,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             PixelFormat.TRANSLUCENT
         )
 
@@ -57,7 +57,8 @@ class MainService : Service(), View.OnTouchListener {
                     // Check if the HOME button is pressed
                     if (event.keyCode === KeyEvent.KEYCODE_BACK) {
 
-                        Log.v(TAG, "BACK Button Pressed")
+                        onDestroy()
+                        floatyView = null
 
                         // As we've taken action, we'll return true to prevent other apps from consuming the event as well
                         return true
@@ -75,10 +76,14 @@ class MainService : Service(), View.OnTouchListener {
         )
 
         floatyView?.let {
-            it.setOnTouchListener(this)
             val imageView = it.findViewById<ImageView>(R.id.canvas)
             Glide.with(this).load(R.raw.gif_1).asGif().into(imageView)
-            imageView.animate().translationX(-Resources.getSystem().displayMetrics.widthPixels.toFloat()).setDuration(0).start()
+            imageView.animate().translationX(
+                when (Random.nextInt() % 2) {
+                    0 -> -1
+                    else -> 1
+                } * Resources.getSystem().displayMetrics.widthPixels.toFloat()
+            ).setDuration(0).start()
             imageView.animate().translationX(0f).setDuration(5000).start()
             windowManager!!.addView(floatyView, params)
         }
@@ -96,18 +101,4 @@ class MainService : Service(), View.OnTouchListener {
         }
     }
 
-    override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
-
-        Log.v(TAG, "onTouch...")
-
-        // Kill service
-        onDestroy()
-
-        return true
-    }
-
-    companion object {
-
-        private val TAG = MainService::class.java.simpleName
-    }
 }

@@ -26,7 +26,7 @@ class MainActivity : Activity() {
     private fun launchMainService() {
 
         val svc = Intent(this, MainService::class.java)
-
+        stopService(svc)
         startService(svc)
 
         finish()
