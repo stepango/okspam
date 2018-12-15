@@ -50,17 +50,32 @@ class MainService : Service() {
         val interceptorLayout = object : FrameLayout(this) {
 
             override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-
-                // Only fire on the ACTION_DOWN event, or you'll get two events (one for _DOWN, one for _UP)
-                if (event.action === KeyEvent.ACTION_DOWN) {
-
-                    // Check if the HOME button is pressed
-                    if (event.keyCode === KeyEvent.KEYCODE_BACK) {
-
-                        onDestroy()
-                        floatyView = null
-
-                        // As we've taken action, we'll return true to prevent other apps from consuming the event as well
+                var handled = false
+                val keyCode = event.keyCode
+                Log.e("Overlay", "Key: $keyCode")
+                if (event.source and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD) {
+                    if (event.repeatCount == 0) {
+                        when (keyCode) {
+                            KeyEvent.KEYCODE_BUTTON_X -> {
+                                //"Button X (Square)".toast()
+                                handled = true
+                            }
+                            KeyEvent.KEYCODE_BUTTON_A -> {
+                                //"Button A (Cross)".toast()
+                                changeImage()
+                                handled = true
+                            }
+                            KeyEvent.KEYCODE_BUTTON_Y -> {
+                                //"Button Y (Triangle)".toast()
+                                handled = true
+                            }
+                            KeyEvent.KEYCODE_BUTTON_B -> {
+                                //"Button B (Circle)".toast()
+                                handled = true
+                            }
+                        }
+                    }
+                    if (handled) {
                         return true
                     }
                 }
@@ -68,6 +83,7 @@ class MainService : Service() {
                 // Otherwise don't intercept the event
                 return super.dispatchKeyEvent(event)
             }
+
         }
 
         floatyView = (getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(
@@ -77,7 +93,7 @@ class MainService : Service() {
 
         floatyView?.let {
             val imageView = it.findViewById<ImageView>(R.id.canvas)
-            Glide.with(this).load(R.raw.gif_1).asGif().into(imageView)
+            Glide.with(this).load(getRandomImage()).asGif().into(imageView)
             imageView.animate().translationX(
                 when (Random.nextInt() % 2) {
                     0 -> -1
@@ -87,7 +103,25 @@ class MainService : Service() {
             imageView.animate().translationX(0f).setDuration(5000).start()
             windowManager!!.addView(floatyView, params)
         }
+        floatyView?.requestFocus()
     }
+
+    private fun changeImage() {
+        floatyView?.let {
+            val imageView = it.findViewById<ImageView>(R.id.canvas)
+            Glide.with(this).load(getRandomImage()).asGif().into(imageView)
+        }
+    }
+
+    private fun getRandomImage(): Int {
+        return when (getRandomInt(1, 3)) {
+            1 -> R.raw.gif_1
+            2 -> R.raw.gif_2
+            else -> R.raw.gif_3
+        }
+    }
+
+    private fun getRandomInt(min: Int = 0, max: Int = 100) = Random.nextInt(max - min + 1) + min
 
     override fun onDestroy() {
 
