@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OkSpam</string>
+    <string name="default_notification_channel_id">Default</string>
+    <string name="pokemon">Pokemon</string>
 </resources>
