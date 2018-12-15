@@ -132,7 +132,10 @@ class MainService : Service() {
     private fun displayNextMessage(index: Int) {
         floatyView?.let {
             val imageView = it.findViewById<ImageView>(R.id.canvas)
-            Glide.with(this).load(getRandomImage()).asGif().into(imageView)
+            imageView.scaleX = 3f
+            imageView.scaleY = 3f
+            imageView.scaleType = ImageView.ScaleType.CENTER
+            Glide.with(this).load(getRandomImage()).asGif().fitCenter().into(imageView)
             imageView.animate().translationX(
                 when (Random.nextInt() % 2) {
                     0 -> -1
@@ -166,6 +169,8 @@ class MainService : Service() {
         floatyView?.let {
             val imageView = it.findViewById<ImageView>(R.id.canvas)
             imageView.setImageDrawable(null)
+            val textView = it.findViewById<TextView>(R.id.message)
+            textView.text = ""
         }
     }
 
