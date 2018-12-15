@@ -33,7 +33,7 @@
         <activity
                 android:name=".ConfigActivity"
                 android:label="Config OkSpam"
-                >
+        >
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -46,7 +46,7 @@
         <service
                 android:name=".MainService"
                 android:exported="false"
-                />
+        />
 
     </application>
 
