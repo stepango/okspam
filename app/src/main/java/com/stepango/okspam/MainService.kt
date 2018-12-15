@@ -3,11 +3,13 @@ package com.stepango.okspam
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.os.IBinder
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.ImageView
 import com.bumptech.glide.Glide
 
 
@@ -74,8 +76,10 @@ class MainService : Service(), View.OnTouchListener {
 
         floatyView?.let {
             it.setOnTouchListener(this)
-            Glide.with(this).load(R.raw.gif_1).asGif().into(it.findViewById(R.id.canvas))
-
+            val imageView = it.findViewById<ImageView>(R.id.canvas)
+            Glide.with(this).load(R.raw.gif_1).asGif().into(imageView)
+            imageView.animate().translationX(-Resources.getSystem().displayMetrics.widthPixels.toFloat()).setDuration(0).start()
+            imageView.animate().translationX(0f).setDuration(5000).start()
             windowManager!!.addView(floatyView, params)
         }
     }
